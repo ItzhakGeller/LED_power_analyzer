@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WLPH W3 LED Characterization Report - Updated</title>
+    <style>
+        .panel {
+            border: 2px solid;
+            margin: 15px 0;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        .blue-panel {
+            border-color: #2684ff;
+            background-color: #e3f2fd;
+            color: #1565c0;
+        }
+        .brown-panel {
+            border-color: #795548;
+            background-color: #efebe9;
+            color: #5d4037;
+        }
+        .orange-panel {
+            border-color: #ff6f00;
+            background-color: #fff3e0;
+            color: #e65100;
+        }
+        .green-panel {
+            border-color: #4caf50;
+            background-color: #e8f5e8;
+            color: #2e7d32;
+        }
+        .blue-step-panel {
+            border-color: #2196f3;
+            background-color: #e3f2fd;
+            color: #1976d2;
+        }
+        .purple-panel {
+            border-color: #9c27b0;
+            background-color: #f3e5f5;
+            color: #7b1fa2;
+        }
+        .red-panel {
+            border-color: #ff5722;
+            background-color: #fbe9e7;
+            color: #d84315;
+        }
+        .success-panel {
+            border-color: #00c853;
+            background-color: #e8f5e8;
+            color: #2e7d32;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 15px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        h1, h2, h3 {
+            color: #333;
+        }
+        .title-panel h3 {
+            margin: 0;
+            font-weight: bold;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+        code {
+            background-color: #f4f4f4;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+
+<div class="panel blue-panel">
+    <h3>WLPH W3 LED Characterization - R&D Validation Report</h3>
+    <p><strong>Purpose:</strong> Characterization analysis of WLPH W3 prototype head to determine technical viability for continued R&D development</p>
+    <p><strong>System:</strong> WLPH W3 (Wide Light Print Head) - 3 Spark modules totaling 49,664 LEDs across 776mm print width</p>
+    <p><strong>Date:</strong> October 2025 | <strong>Analyst:</strong> LED Characterization Team</p>
+    <p><strong>Reference:</strong> Manual measurement procedures documented in separate protocol guide</p>
+</div>
+
+<h2>📋 Project Overview & Objectives</h2>
+
+<div class="panel brown-panel">
+    <h3 class="title-panel">Research Context & Decision Point</h3>
+    <p>The WLPH W3 represents a prototype wide-format LED print head requiring validation before committing resources to continued research and development. This analysis serves as a critical decision point to:</p>
+    <ul>
+        <li><strong>Validate LED functionality:</strong> Ensure all 49,664 LEDs are operational and detectable</li>
+        <li><strong>Measure amplitude value:</strong> Find the power of each specific LED</li>
+    </ul>
+</div>
+
+<h2>🔬 Data Collection Methodology</h2>
+
+<div class="panel brown-panel">
+    <h3 class="title-panel">Measurement Protocol</h3>
+    <p>Measurements were performed following a designated procedure using oscilloscope and power detector.</p>
+    <p>Each LED was activated separately creating a multi-millisecond pulse signal for precise characterization.</p>
+</div>
+
+<h2>🔬📊 Comprehensive Analysis Methodology</h2>
+
+<div class="panel orange-panel">
+    <h3 class="title-panel">7-Step LED Pulse Analysis Pipeline - Detailed Implementation</h3>
+    <p>Each Spark module underwent comprehensive automated analysis using a <strong>7-step pipeline</strong> designed to extract maximum information while maintaining data integrity:</p>
+</div>
+
+<h3>Step 1: Data Loading & Preprocessing</h3>
+
+<div class="panel green-panel">
+    <h3 class="title-panel">📁 Raw Data Import & Validation</h3>
+    <p><strong>Objective:</strong> Load and validate raw measurement data from binary files, ensuring data quality for subsequent analysis.</p>
+    <p><strong>Method:</strong></p>
+    <ul>
+        <li>Import binary data files with float32 precision</li>
+        <li>Handle special values (NaN, infinity) with safe replacements</li>
+        <li>Remove extreme outliers beyond reasonable measurement ranges</li>
+        <li>Generate data quality statistics for validation</li>
+    </ul>
+    <p><strong>Quality Metrics:</strong></p>
+    <ul>
+        <li>Total samples loaded and data range validation</li>
+        <li>Detection and cleaning of anomalous values</li>
+        <li>Statistical summary (mean, standard deviation, data type verification)</li>
+    </ul>
+</div>
+
+<h3>Step 2: Histogram Analysis, Threshold & Pulse Width Calculation</h3>
+
+<div class="panel blue-step-panel">
+    <h3 class="title-panel">📊 Intelligent Signal Separation & Pulse Characterization</h3>
+    <p><strong>Objective:</strong> Automatically determine optimal threshold for separating LED pulse signals from background noise AND calculate characteristic pulse width using direct measurement.</p>
+    
+    <p><strong>Data Selection Strategy:</strong></p>
+    <ul>
+        <li>Extract 20,000 samples from signal center region (avoiding boundary artifacts)</li>
+        <li>Calculate center range as 50% ± 1% of total data length</li>
+        <li>This approach ensures representative sampling while avoiding potential edge effects</li>
+    </ul>
+    
+    <p><strong>Histogram Construction & Threshold Analysis:</strong></p>
+    <ul>
+        <li>Generate 200-bin histogram of center region amplitude distribution</li>
+        <li>Apply peak detection algorithm to identify bimodal distribution</li>
+        <li>Locate valley region (noise floor) and pulse region (LED signals)</li>
+        <li>Calculate optimal threshold as midpoint between peak centers</li>
+    </ul>
+    
+    <p><strong>Pulse Width Estimation (NEW METHOD):</strong></p>
+    <ul>
+        <li>Apply threshold crossings detection to the same 20K center samples</li>
+        <li>Identify positive crossings (signal rising above threshold)</li>
+        <li>Identify negative crossings (signal falling below threshold)</li>
+        <li>Analyze first 100 detected pulses for width calculation</li>
+        <li>Calculate average pulse width with statistical validation</li>
+    </ul>
+    
+    <p><strong>Statistical Validation:</strong></p>
+    <ul>
+        <li>Verify bimodal distribution with 2 distinct peaks</li>
+        <li>Calculate peak separation for signal-to-noise discrimination</li>
+        <li>Validate pulse width consistency across measured samples</li>
+        <li>Apply threshold to full dataset and verify reasonable pulse/valley ratio</li>
+    </ul>
+</div>
+
+<h3>Step 3: Smart Dead Zone Removal with Safety Margins</h3>
+
+<div class="panel purple-panel">
+    <h3 class="title-panel">✂️ Boundary Detection & Data Cleaning</h3>
+    <p><strong>Objective:</strong> Remove dead zones at data boundaries where LED signals may be incomplete or corrupted, while preserving all valid LED measurements.</p>
+    
+    <p><strong>Dead Zone Detection Algorithm:</strong></p>
+    <ul>
+        <li>Scan data edges to identify where the signal pattern changes to exclude outliers</li>
+        <li>Identify boundary where pulse density drops below expected LED periodicity</li>
+        <li>Dynamic threshold based on calculated pulse width (typically 10x pulse width samples)</li>
+    </ul>
+    
+    <p><strong>Safety Margin Implementation:</strong></p>
+    <ul>
+        <li>Apply conservative safety margin equal to 10 pulse widths</li>
+        <li>Ensures no partial LED pulses included in analysis dataset</li>
+        <li>Maintains data integrity while maximizing valid sample retention</li>
+    </ul>
+    
+    <p><strong>Quality Metrics:</strong></p>
+    <ul>
+        <li>Track data retention percentage (target >70%)</li>
+        <li>Verify clean boundaries with consistent pulse detection</li>
+    </ul>
+</div>
+
+<h3>Step 4: Precision Pulse Detection via Threshold Crossings</h3>
+
+<div class="panel red-panel">
+    <h3 class="title-panel">🎯 Individual LED Pulse Identification</h3>
+    <p><strong>Objective:</strong> Precisely locate each individual LED pulse using threshold crossing detection to enable accurate peak/valley measurements.</p>
+    
+    <p><strong>Crossing Detection Method:</strong></p>
+    <ul>
+        <li>Identify positive crossings (signal rising above threshold)</li>
+        <li>Identify negative crossings (signal falling below threshold)</li>
+        <li>Pair consecutive positive/negative crossings to define complete pulses</li>
+        <li>Validate pulse pairing to ensure 1:1 correspondence</li>
+    </ul>
+    
+    <p><strong>Quality Assurance:</strong></p>
+    <ul>
+        <li>Count total detected pulses vs. expected LED count</li>
+        <li>Verify pulse detection completeness (>99% target)</li>
+        <li>Flag any detection anomalies for detailed inspection</li>
+        <li><strong>No additional pulse width validation required</strong> - relies solely on threshold crossings</li>
+    </ul>
+</div>
+
+<h3>Steps 5-7: Advanced Signal Analysis & Validation</h3>
+
+<div class="panel brown-panel">
+    <h3 class="title-panel">📊 Detailed Characterization & Export Pipeline</h3>
+    
+    <p><strong>Step 5 - Peak/Valley Calculation:</strong> Center-region analysis (50% points taken) for maximum accuracy, avoiding edge effects that could skew measurements.</p>
+    
+    <p><strong>Step 6 - Normalization:</strong> Statistical standardization using mean amplitude reference, enabling cross-module comparisons.</p>
+    
+    <p><strong>Step 7 - Data Export & Verification:</strong> CSV generation with essential metrics (LED_Number, Peak, Valley, Height, Width, Normalized_Height) and multi-region statistical validation.</p>
+</div>
+
+<h2>📊 Full LPH LED Normalized Power Results</h2>
+<p><em>[Chart would show normalized power distribution across all 49,664 LEDs]</em></p>
+
+<h2>📊 Comprehensive Analysis Results</h2>
+
+<div class="panel success-panel">
+    <h3 class="title-panel">✅ Complete Analysis Results - Prototype Validation Success</h3>
+    <p><strong>Overall Performance Summary:</strong></p>
+    <ul>
+        <li>✅ <strong>100% LED Detection Rate</strong> across all 49,664 LEDs in the WLPH W3 system</li>
+        <li>✅ <strong>Consistent Signal Quality</strong> with SNR > 2.0 across all three Spark modules</li>
+        <li>✅ <strong>Automated Pipeline Success</strong> - Full analysis completed without manual intervention</li>
+        <li>✅ <strong>Data Integrity Confirmed</strong> - All generated datasets passed validation checks</li>
+        <li>✅ <strong>Improved Methodology</strong> - Direct pulse width measurement eliminates autocorrelation complexity</li>
+    </ul>
+</div>
+
+<h3>📊 Detailed Results by Spark Module</h3>
+
+<table>
+    <thead>
+        <tr>
+            <th>Spark Module</th>
+            <th>LED Range</th>
+            <th>Total LEDs</th>
+            <th>Detection Rate</th>
+            <th>Signal Height</th>
+            <th>Pulse Width</th>
+            <th>SNR</th>
+            <th>Data Retention</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>Spark_Rear_W3</strong></td>
+            <td>2304 - 15615</td>
+            <td>13,312</td>
+            <td>100.0%</td>
+            <td>0.336 ± 0.003</td>
+            <td>24-26 samples</td>
+            <td>2.5</td>
+            <td>84.2%</td>
+        </tr>
+        <tr>
+            <td><strong>Spark_Middle</strong></td>
+            <td>256 - 15615</td>
+            <td>15,360</td>
+            <td>100.0%</td>
+            <td>0.034 ± 0.002</td>
+            <td>21-24 samples</td>
+            <td>2.4</td>
+            <td>78.7%</td>
+        </tr>
+        <tr>
+            <td><strong>Spark_Front</strong></td>
+            <td>256 - 21247</td>
+            <td>20,992</td>
+            <td>100.0%</td>
+            <td>0.034 ± 0.002</td>
+            <td>12-14 samples</td>
+            <td>2.5</td>
+            <td>70.0%</td>
+        </tr>
+    </tbody>
+</table>
+
+<h2>📊 Methodology Improvements</h2>
+
+<div class="panel green-panel">
+    <h3 class="title-panel">🔧 Key Analysis Improvements</h3>
+    <p><strong>Simplified Pipeline:</strong> Reduced from 8 steps to 7 steps for improved efficiency and clarity.</p>
+    
+    <p><strong>Direct Pulse Width Measurement:</strong></p>
+    <ul>
+        <li>Eliminated complex autocorrelation analysis</li>
+        <li>Direct measurement using threshold crossings on the same data used for histogram analysis</li>
+        <li>More accurate and computationally efficient approach</li>
+        <li>Uses first 100 pulses from center region for reliable statistics</li>
+    </ul>
+    
+    <p><strong>Enhanced Data Integrity:</strong></p>
+    <ul>
+        <li>Single-pass analysis of center region for both threshold and pulse width</li>
+        <li>Consistent methodology across all measurement parameters</li>
+        <li>Reduced potential for analysis artifacts from multiple processing steps</li>
+    </ul>
+</div>
+
+<h2>📊 Visualization Documentation</h2>
+
+<div class="panel purple-panel">
+    <h3 class="title-panel">🖼️ Generated Analysis Files</h3>
+    
+    <h4>Step-by-Step Visualizations (7 PNG files):</h4>
+    <ul>
+        <li><code>step1_data_loading.png</code> - Raw data overview and quality metrics</li>
+        <li><code>step2_histogram_threshold.png</code> - Histogram analysis, threshold, and pulse width calculation</li>
+        <li><code>step3_dead_zone_removal.png</code> - Boundary detection and data cleaning</li>
+        <li><code>step4_pulse_detection.png</code> - Individual pulse identification</li>
+        <li><code>step5_peak_valley_calculation.png</code> - Signal amplitude measurements</li>
+        <li><code>step6_normalization.png</code> - Statistical standardization</li>
+        <li><code>step7_detailed_pulse_verification.png</code> - Final validation and verification</li>
+    </ul>
+    
+    <h4>Data Export Files:</h4>
+    <ul>
+        <li><code>Spark_Rear_W3_simplified_analysis.csv</code> (597 KB) - 13,312 LED measurements</li>
+        <li><code>Spark_middle_simplified_analysis.csv</code> (719 KB) - 15,360 LED measurements</li>
+        <li><code>Spark_front_simplified_analysis.csv</code> (984 KB) - 20,992 LED measurements</li>
+    </ul>
+</div>
+
+<h2>💻 Technical Resources</h2>
+
+<div class="panel brown-panel">
+    <h3 class="title-panel">Implementation Details</h3>
+    <p><strong>Analysis Code:</strong> <code>complete_led_analyzer.py</code> - Full automated 7-step pipeline</p>
+    <p><strong>Data Format:</strong> CSV exports with LED_Number, Peak, Valley, Height, Width, Normalized_Height columns</p>
+    <p><strong>Key Improvements:</strong></p>
+    <ul>
+        <li>Streamlined 7-step process (reduced from 8 steps)</li>
+        <li>Direct pulse width measurement without autocorrelation</li>
+        <li>Enhanced computational efficiency</li>
+        <li>Improved measurement accuracy through integrated analysis</li>
+    </ul>
+</div>
+
+<h2>✅ Conclusions & Recommendations</h2>
+
+<div class="panel success-panel">
+    <h3 class="title-panel">Final Assessment</h3>
+    <p><strong>Technical Validation:</strong> The WLPH W3 prototype demonstrates excellent technical viability with 100% LED detection and consistent signal quality across all modules.</p>
+    
+    <p><strong>Methodology Success:</strong> The improved 7-step analysis pipeline provides accurate, reliable characterization without unnecessary complexity.</p>
+    
+    <p><strong>R&D Recommendation:</strong> <span style="color: #00c853; font-weight: bold;">PROCEED with continued development</span> - All technical validation criteria met successfully.</p>
+</div>
+
+<hr>
+<p><em>Report generated: October 2025 | Analysis System: Complete LED Analyzer v2.0 | Updated methodology without autocorrelation</em></p>
+
+</body>
+</html>

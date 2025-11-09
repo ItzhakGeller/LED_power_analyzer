@@ -1,0 +1,45 @@
+================================================================================
+OVERALL CROSS-TALK ANALYSIS SUMMARY
+================================================================================
+Generated: 2025-11-05 10:59:55
+
+
+Rear:
+----------------------------------------
+✅ Analysis successful
+LEDs analyzed: 13312
+Mean height change: 0.16%
+Mean peak change: 0.02%
+Mean Peak STD change: 0.00%
+LEDs with >5% amplitude change: 0 (0.0%)
+LEDs with >10% stability change: 0 (0.0%)
+
+Middle:
+----------------------------------------
+✅ Analysis successful
+LEDs analyzed: 15360
+Mean height change: -0.12%
+Mean peak change: -0.13%
+Mean Peak STD change: 0.00%
+LEDs with >5% amplitude change: 0 (0.0%)
+LEDs with >10% stability change: 0 (0.0%)
+
+Front:
+----------------------------------------
+✅ Analysis successful
+LEDs analyzed: 15360
+Mean height change: -0.07%
+Mean peak change: -0.29%
+Mean Peak STD change: 0.00%
+LEDs with >5% amplitude change: 0 (0.0%)
+LEDs with >10% stability change: 0 (0.0%)
+
+================================================================================
+CONCLUSIONS:
+--------------------------------------------------------------------------------
+
+Overall mean height change across all modules: 0.12%
+
+Assessment: Cross-talk effects are MINIMAL across all tested modules. The intensity variations are within normal measurement noise (<1%).
+
+================================================================================

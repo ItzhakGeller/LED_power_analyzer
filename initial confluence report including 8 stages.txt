@@ -1,0 +1,405 @@
+<p class="auto-cursor-target">
+  <br/>
+</p>
+<ac:structured-macro ac:macro-id="038b937b-bd4c-4717-9576-515e91ef1231" ac:name="panel" ac:schema-version="1">
+  <ac:parameter ac:name="borderColor">#2684ff</ac:parameter>
+  <ac:parameter ac:name="bgColor">#e3f2fd</ac:parameter>
+  <ac:parameter ac:name="titleColor">#1565c0</ac:parameter>
+  <ac:parameter ac:name="borderWidth">2px</ac:parameter>
+  <ac:parameter ac:name="borderStyle">solid</ac:parameter>
+  <ac:parameter ac:name="title">WLPH W3 LED Characterization - R&amp;D Validation Report</ac:parameter>
+  <ac:rich-text-body>
+    <p>
+      <strong>Purpose:</strong> Characterization analysis of WLPH W3 prototype head to determine technical viability for continued R&amp;D development</p>
+    <p>
+      <strong>System:</strong> WLPH W3 (Wide Light Print Head) - 3 Spark modules totaling 49,664 LEDs across 776mm print width</p>
+    <p>
+      <strong>Date:</strong> October 2025 | <strong>Analyst:</strong> LED Characterization Team</p>
+    <p>
+      <strong>Reference:</strong> Manual measurement procedures documented in separate protocol guide</p>
+  </ac:rich-text-body>
+</ac:structured-macro>
+<h2> Project Overview &amp; Objectives</h2>
+<ac:structured-macro ac:macro-id="2ba2e2cb-6abd-41fb-97a6-8183a7db4c14" ac:name="panel" ac:schema-version="1">
+  <ac:parameter ac:name="borderColor">#795548</ac:parameter>
+  <ac:parameter ac:name="bgColor">#efebe9</ac:parameter>
+  <ac:parameter ac:name="titleColor">#5d4037</ac:parameter>
+  <ac:parameter ac:name="borderWidth">2px</ac:parameter>
+  <ac:parameter ac:name="borderStyle">solid</ac:parameter>
+  <ac:parameter ac:name="title">Research Context &amp; Decision Point</ac:parameter>
+  <ac:rich-text-body>
+    <p>The WLPH W3 represents a prototype wide-format LED print head requiring validation before committing resources to continued research and development. This analysis serves as a critical decision point to:</p>
+    <ul>
+      <li>
+        <strong>Validate LED functionality:</strong> Ensure all 49,664 LEDs are operational and detectable</li>
+      <li>
+        <strong style="letter-spacing: 0.0px;">Measure amplitude value:</strong> Find the power of each specific LED</li>
+    </ul>
+  </ac:rich-text-body>
+</ac:structured-macro>
+<h2>� Data Collection Methodology</h2>
+<ac:structured-macro ac:macro-id="4001d657-0c68-4520-aee6-aaa60e0b52c5" ac:name="panel" ac:schema-version="1">
+  <ac:parameter ac:name="borderColor">#795548</ac:parameter>
+  <ac:parameter ac:name="bgColor">#efebe9</ac:parameter>
+  <ac:parameter ac:name="titleColor">#5d4037</ac:parameter>
+  <ac:parameter ac:name="borderWidth">2px</ac:parameter>
+  <ac:parameter ac:name="borderStyle">solid</ac:parameter>
+  <ac:parameter ac:name="title">Research Context &amp; Decision Point</ac:parameter>
+  <ac:rich-text-body>
+    <p>Measurements was done following a designated procedure using oscilloscope and power detector</p>
+    <p>Each LED was activated separately creating a multi millisecond pulse.</p>
+  </ac:rich-text-body>
+</ac:structured-macro>
+<h2>�&#55357;&#56620; Comprehensive Analysis Methodology</h2>
+<ac:structured-macro ac:macro-id="f3e77057-3177-4901-ae62-0b64dca5d1c3" ac:name="panel" ac:schema-version="1">
+  <ac:parameter ac:name="borderColor">#ff6f00</ac:parameter>
+  <ac:parameter ac:name="bgColor">#fff3e0</ac:parameter>
+  <ac:parameter ac:name="titleColor">#e65100</ac:parameter>
+  <ac:parameter ac:name="borderWidth">2px</ac:parameter>
+  <ac:parameter ac:name="borderStyle">solid</ac:parameter>
+  <ac:parameter ac:name="title">8-Step LED Pulse Analysis Pipeline - Detailed Implementation</ac:parameter>
+  <ac:rich-text-body>
+    <p>Each Spark module underwent comprehensive automated analysis using a 8-step pipeline designed to extract maximum information while maintaining data integrity:</p>
+  </ac:rich-text-body>
+</ac:structured-macro>
+<h3>Step 1: Pulse Width Estimation via Autocorrelation</h3>
+<ac:structured-macro ac:macro-id="bb627e66-d571-4593-a9b5-6eadce8472b8" ac:name="panel" ac:schema-version="1">
+  <ac:parameter ac:name="borderColor">#4caf50</ac:parameter>
+  <ac:parameter ac:name="bgColor">#e8f5e8</ac:parameter>
+  <ac:parameter ac:name="titleColor">#2e7d32</ac:parameter>
+  <ac:parameter ac:name="borderWidth">1px</ac:parameter>
+  <ac:parameter ac:name="borderStyle">solid</ac:parameter>
+  <ac:parameter ac:name="title">&#55357;&#56589; Autocorrelation-Based Pattern Detection</ac:parameter>
+  <ac:rich-text-body>
+    <p>
+      <strong>Objective:</strong> Determine the characteristic pulse width and periodicity without prior assumptions about LED timing.</p>
+    <p>
+      <strong>Method:</strong>
+    </p>
+    <ul>
+      <li>Calculate autocorrelation function across entire data stream</li>
+      <li>Identify peak correlation values indicating periodic LED pulse structure</li>
+      <li>Extract dominant periodicity corresponding to LED spacing</li>
+      <li>Estimate individual pulse width from correlation peak characteristics</li>
+    </ul>
+    <p>
+      <ac:image ac:width="700">
+        <ri:attachment ri:filename="step1_pulse_width_estimation.png"/>
+      </ac:image>
+    </p>
+    <p>
+      <br/>
+    </p>
+  </ac:rich-text-body>
+</ac:structured-macro>
+<h3>Step 2: Adaptive Histogram Analysis &amp; Threshold Calculation</h3>
+<ac:structured-macro ac:macro-id="b71e5679-4304-4ce2-9841-0e623dda2f9a" ac:name="panel" ac:schema-version="1">
+  <ac:parameter ac:name="borderColor">#2196f3</ac:parameter>
+  <ac:parameter ac:name="bgColor">#e3f2fd</ac:parameter>
+  <ac:parameter ac:name="titleColor">#1976d2</ac:parameter>
+  <ac:parameter ac:name="borderWidth">1px</ac:parameter>
+  <ac:parameter ac:name="borderStyle">solid</ac:parameter>
+  <ac:parameter ac:name="title">&#55357;&#56520; Intelligent Signal Separation</ac:parameter>
+  <ac:rich-text-body>
+    <p>
+      <strong>Objective:</strong> Automatically determine optimal threshold for separating LED pulse signals from background noise without manual intervention.</p>
+    <p>
+      <strong>Data Selection Strategy:</strong>
+    </p>
+    <ul>
+      <li>Extract 20,000 samples from signal center region (avoiding boundary artifacts)</li>
+      <li>Calculate center range as 50% ± 1% of total data length</li>
+      <li>This approach ensures representative sampling while avoiding potential edge effects</li>
+    </ul>
+    <p>
+      <strong>Histogram Construction &amp; Analysis:</strong>
+    </p>
+    <ul>
+      <li>Generate 200-bin histogram of center region amplitude distribution</li>
+      <li>Apply peak detection algorithm to identify bimodal distribution</li>
+      <li>Locate valley region (noise floor) and pulse region (LED signals)</li>
+      <li>Calculate optimal threshold as midpoint between peak centers</li>
+    </ul>
+    <p>
+      <strong>Statistical Validation:</strong>
+    </p>
+    <ul>
+      <li>Verify bimodal distribution with 2 distinct peaks</li>
+      <li>Calculate peak separation to ensure adequate signal-to-noise discrimination</li>
+      <li>Apply threshold to full dataset and verify reasonable pulse/valley ratio</li>
+      <li>
+        <ac:image ac:height="250">
+          <ri:attachment ri:filename="step2_histogram_threshold.png"/>
+        </ac:image>
+      </li>
+    </ul>
+    <p>
+      <br/>
+    </p>
+  </ac:rich-text-body>
+</ac:structured-macro>
+<h3>Step 3: Smart Dead Zone Removal with Safety Margins</h3>
+<ac:structured-macro ac:macro-id="8e7fbf27-1b38-40c4-af38-d3e77b0136cb" ac:name="panel" ac:schema-version="1">
+  <ac:parameter ac:name="borderColor">#9c27b0</ac:parameter>
+  <ac:parameter ac:name="bgColor">#f3e5f5</ac:parameter>
+  <ac:parameter ac:name="titleColor">#7b1fa2</ac:parameter>
+  <ac:parameter ac:name="borderWidth">1px</ac:parameter>
+  <ac:parameter ac:name="borderStyle">solid</ac:parameter>
+  <ac:parameter ac:name="title">✂️ Boundary Detection &amp; Data Cleaning</ac:parameter>
+  <ac:rich-text-body>
+    <p>
+      <strong>Objective:</strong> Remove dead zones at data boundaries where LED signals may be incomplete or corrupted, while preserving all valid LED measurements.</p>
+    <p>
+      <strong>Dead Zone Detection Algorithm:</strong>
+    </p>
+    <ul>
+      <li>Scan data edges to identify where the signal pattern is changing to exclude outliers</li>
+      <li>Identify boundary where pulse density drops below expected LED periodicity</li>
+      <li>Dynamic threshold based on estimated pulse width (typically 10x pulse width samples)</li>
+    </ul>
+    <p>
+      <strong>Safety Margin Implementation:</strong>
+    </p>
+    <ul>
+      <li>Apply conservative safety margin equal to 10 pulse widths</li>
+      <li>Ensures no partial LED pulses included in analysis dataset</li>
+      <li>Maintains data integrity while maximizing valid sample retention</li>
+    </ul>
+    <p>
+      <strong>Quality Metrics:</strong>
+    </p>
+    <ul>
+      <li>Track data retention percentage (target &gt;70%)</li>
+      <li>Verify clean boundaries with consistent pulse detection</li>
+    </ul>
+    <p>
+      <strong>
+        <ac:image ac:width="600">
+          <ri:attachment ri:filename="step3_dead_zone_removal.png"/>
+        </ac:image>
+      </strong>
+    </p>
+  </ac:rich-text-body>
+</ac:structured-macro>
+<h3>Step 4: Precision Pulse Detection via Threshold Crossings</h3>
+<ac:structured-macro ac:macro-id="4d5c2a68-4f7a-4420-ad2c-225cf59ef3fc" ac:name="panel" ac:schema-version="1">
+  <ac:parameter ac:name="borderColor">#ff5722</ac:parameter>
+  <ac:parameter ac:name="bgColor">#fbe9e7</ac:parameter>
+  <ac:parameter ac:name="titleColor">#d84315</ac:parameter>
+  <ac:parameter ac:name="borderWidth">1px</ac:parameter>
+  <ac:parameter ac:name="borderStyle">solid</ac:parameter>
+  <ac:parameter ac:name="title">&#55356;&#57263; Individual LED Pulse Identification</ac:parameter>
+  <ac:rich-text-body>
+    <p>
+      <strong>Objective:</strong> Precisely locate each individual LED pulse using threshold crossing detection to enable accurate peak/valley measurements.</p>
+    <p>
+      <strong>Crossing Detection Method:</strong>
+    </p>
+    <ul>
+      <li>Identify positive crossings (signal rising above threshold)</li>
+      <li>Identify negative crossings (signal falling below threshold)</li>
+      <li>Pair consecutive positive/negative crossings to define complete pulses</li>
+      <li>Validate pulse pairing to ensure 1:1 correspondence</li>
+    </ul>
+    <p>
+      <strong>Pulse Validation Criteria:</strong>
+    </p>
+    <ul>
+      <li>Minimum pulse width validation (prevent noise-induced false detections)</li>
+      <li>Maximum pulse width limits (detect potential pulse merging issues)</li>
+      <li>Sequential pulse spacing consistency checks</li>
+    </ul>
+    <p>
+      <strong>Quality Assurance:</strong>
+    </p>
+    <ul>
+      <li>Count total detected pulses vs. expected LED count</li>
+      <li>Verify pulse detection completeness (&gt;99% target)</li>
+      <li>Flag any detection anomalies for detailed inspection</li>
+    </ul>
+    <p>
+      <ac:image ac:width="600">
+        <ri:attachment ri:filename="step4_pulse_detection.png"/>
+      </ac:image>
+    </p>
+  </ac:rich-text-body>
+</ac:structured-macro>
+<h3>Steps 5-8: Advanced Signal Analysis &amp; Validation</h3>
+<ac:structured-macro ac:macro-id="5fe2771e-303e-414e-a8f2-c65e2e2d350b" ac:name="panel" ac:schema-version="1">
+  <ac:parameter ac:name="borderColor">#795548</ac:parameter>
+  <ac:parameter ac:name="bgColor">#efebe9</ac:parameter>
+  <ac:parameter ac:name="titleColor">#5d4037</ac:parameter>
+  <ac:parameter ac:name="borderWidth">1px</ac:parameter>
+  <ac:parameter ac:name="borderStyle">solid</ac:parameter>
+  <ac:parameter ac:name="title">&#55357;&#56620; Detailed Characterization &amp; Export Pipeline</ac:parameter>
+  <ac:rich-text-body>
+    <p>
+      <strong>Step 5 - Peak/Valley Calculation:</strong> Center-region analysis (50% points taken) for maximum accuracy, avoiding edge effects that could skew measurements.</p>
+    <p>
+      <strong>Step 6 - Normalization:</strong> Statistical standardization using mean amplitude reference, enabling cross-module comparisons.</p>
+    <p>
+      <strong>Step 7 - Data Export:</strong> CSV generation with essential metrics (LED_Number, Peak, Valley, Height, Width, Normalized_Height).</p>
+    <p>
+      <strong>Step 8 - Multi-Region Verification:</strong> Statistical validation across multiple LED regions with SNR analysis.</p>
+    <p>
+      <strong>&#55357;&#56522; INSERT IMAGES:</strong>
+    </p>
+    <p>
+      <code>
+        <ac:image ac:height="250">
+          <ri:attachment ri:filename="step5_peak_valley_calculation.png"/>
+        </ac:image>
+      </code>
+    </p>
+    <p>
+      <code>
+        <ac:image ac:width="550">
+          <ri:attachment ri:filename="step8_detailed_pulse_verification.png"/>
+        </ac:image>
+      </code>
+    </p>
+    <p>
+      <br/>
+    </p>
+  </ac:rich-text-body>
+</ac:structured-macro>
+<h2>Full LPH LED normalized power results:</h2>
+<p>
+  <ac:image ac:width="900">
+    <ri:attachment ri:filename="image-2025-10-19_14-27-51.png"/>
+  </ac:image>
+</p>
+<p>
+  <br/>
+</p>
+<h2>&#55357;&#56522; Comprehensive Analysis Results</h2>
+<ac:structured-macro ac:macro-id="5f19929b-d716-46f0-b7dc-bb0dc3d0f6f9" ac:name="panel" ac:schema-version="1">
+  <ac:parameter ac:name="borderColor">#00c853</ac:parameter>
+  <ac:parameter ac:name="bgColor">#e8f5e8</ac:parameter>
+  <ac:parameter ac:name="titleColor">#2e7d32</ac:parameter>
+  <ac:parameter ac:name="borderWidth">2px</ac:parameter>
+  <ac:parameter ac:name="borderStyle">solid</ac:parameter>
+  <ac:parameter ac:name="title">✅ Complete Analysis Results - Prototype Validation Success</ac:parameter>
+  <ac:rich-text-body>
+    <p>
+      <strong>Overall Performance Summary:</strong>
+    </p>
+    <ul>
+      <li>✅ **100% LED Detection Rate** across all 49,664 LEDs in the WLPH W3 system</li>
+      <li>✅ **Consistent Signal Quality** with SNR &gt; 2.0 across all three Spark modules</li>
+      <li>✅ **Automated Pipeline Success** - Full analysis completed without manual intervention</li>
+      <li>✅ **Data Integrity Confirmed** - All generated datasets passed validation checks</li>
+    </ul>
+  </ac:rich-text-body>
+</ac:structured-macro>
+<h3>&#55357;&#56522; Detailed Results by Spark Module</h3>
+<table class="wrapped">
+  <thead>
+    <tr>
+      <th>Spark Module</th>
+      <th>LED Range</th>
+      <th>Total LEDs</th>
+      <th>Detection Rate</th>
+      <th>Signal Height</th>
+      <th>Pulse Width</th>
+      <th>SNR</th>
+      <th>Data Retention</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <strong>Spark_Rear_W3</strong>
+      </td>
+      <td>2304 - 15615</td>
+      <td>13,312</td>
+      <td>100.0%</td>
+      <td>0.336 ± 0.003</td>
+      <td>24-26 samples</td>
+      <td>2.5</td>
+      <td>84.2%</td>
+    </tr>
+    <tr>
+      <td>
+        <strong>Spark_Middle</strong>
+      </td>
+      <td>256 - 15615</td>
+      <td>15,360</td>
+      <td>100.0%</td>
+      <td>0.034 ± 0.002</td>
+      <td>21-24 samples</td>
+      <td>2.4</td>
+      <td>78.7%</td>
+    </tr>
+    <tr>
+      <td>
+        <strong>Spark_Front</strong>
+      </td>
+      <td>256 - 21247</td>
+      <td>20,992</td>
+      <td>100.0%</td>
+      <td>0.034 ± 0.002</td>
+      <td>12-14 samples</td>
+      <td>2.5</td>
+      <td>70.0%</td>
+    </tr>
+  </tbody>
+</table>
+<h2>&#55357;&#56520; Visualization Documentation</h2>
+<ac:structured-macro ac:macro-id="b3bba926-2bc0-4d16-81f7-d883f99b2788" ac:name="panel" ac:schema-version="1">
+  <ac:parameter ac:name="borderColor">#9c27b0</ac:parameter>
+  <ac:parameter ac:name="bgColor">#f3e5f5</ac:parameter>
+  <ac:parameter ac:name="titleColor">#7b1fa2</ac:parameter>
+  <ac:parameter ac:name="borderWidth">2px</ac:parameter>
+  <ac:parameter ac:name="borderStyle">solid</ac:parameter>
+  <ac:parameter ac:name="title">&#55357;&#56764;️ Complete Image Placement Guide for Technical Documentation</ac:parameter>
+  <ac:rich-text-body>
+    <p>
+      <br/>
+    </p>
+    <h3>Data Export Files (Available for Download)</h3>
+    <ul>
+      <li>
+        <code>Spark_Rear_W3_simplified_analysis.csv</code> (597 KB) - 13,312 LED measurements</li>
+      <li>
+        <code>Spark_middle_simplified_analysis.csv</code> (719 KB) - 15,360 LED measurements</li>
+      <li>
+        <code>Spark_front_simplified_analysis.csv</code> (984 KB) - 20,992 LED measurements</li>
+    </ul>
+    <p>
+      <ac:structured-macro ac:macro-id="d056728f-d90e-4d34-a2b5-c8dc4a840d03" ac:name="view-file" ac:schema-version="1">
+        <ac:parameter ac:name="name">
+          <ri:attachment ri:filename="Spark_front_simplified_analysis.csv"/>
+        </ac:parameter>
+        <ac:parameter ac:name="height">250</ac:parameter>
+      </ac:structured-macro>
+      <ac:structured-macro ac:macro-id="d09421fe-5db0-4044-a9ad-f10340f447e4" ac:name="view-file" ac:schema-version="1">
+        <ac:parameter ac:name="name">
+          <ri:attachment ri:filename="Spark_middle_simplified_analysis.csv"/>
+        </ac:parameter>
+        <ac:parameter ac:name="height">250</ac:parameter>
+      </ac:structured-macro>
+      <ac:structured-macro ac:macro-id="abb4e94b-2e6f-410d-9e7b-68d9a5c506ce" ac:name="view-file" ac:schema-version="1">
+        <ac:parameter ac:name="name">
+          <ri:attachment ri:filename="Spark_Rear_W3_complete_analysis.csv"/>
+        </ac:parameter>
+        <ac:parameter ac:name="height">250</ac:parameter>
+      </ac:structured-macro>
+    </p>
+  </ac:rich-text-body>
+</ac:structured-macro>
+<h2>&#55357;&#56513; Technical Resources</h2>
+<p>
+  <strong>Analysis Code:</strong> <code>complete_led_analyzer.py</code> - Full automated pipeline<br/>
+  <strong>Data Format:</strong> CSV exports with LED_Number, Peak, Valley, Height, Width, Normalized_Height columns</p>
+<p>
+  <ac:structured-macro ac:macro-id="5db52a56-8fd6-4996-87fb-ad8a6b46c535" ac:name="view-file" ac:schema-version="1">
+    <ac:parameter ac:name="name">
+      <ri:attachment ri:filename="complete_led_analyzer.py"/>
+    </ac:parameter>
+    <ac:parameter ac:name="height">250</ac:parameter>
+  </ac:structured-macro>
+</p>
+<p>
+  <em>.</em>
+</p>

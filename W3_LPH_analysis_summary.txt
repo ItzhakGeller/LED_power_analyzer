@@ -1,0 +1,24 @@
+W3 LPH UNIFIED LED ANALYSIS SUMMARY
+==================================================
+
+PHYSICAL SPECIFICATIONS:
+• Total length: 776 mm
+• LED density: 64 LEDs/mm
+• Expected total LEDs: 49,664
+
+MEASURED DATA:
+• Total measured LEDs: 28,672
+• Coverage: 57.7%
+• LED range: 0-28,671
+• Position range: 0-448.0 mm
+
+SPARK SECTIONS:
+• Rear: 13,312 LEDs
+• Middle: 15,360 LEDs
+• Front: 0 LEDs
+
+QUALITY METRICS:
+• Average Height: 0.174129
+• Height Std Dev: 0.150647
+• Average Peak Std: 0.002001
+• Peak Std Dev: 0.002195

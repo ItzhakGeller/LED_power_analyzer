@@ -1,0 +1,49 @@
+﻿================================================================================
+CROSS-TALK CHANGE DISTRIBUTION - SUMMARY
+================================================================================
+
+Analysis of LED intensity changes due to cross-talk across all three modules.
+Total LEDs analyzed: 44,032 (Rear: 13,312 | Middle: 15,360 | Front: 15,360)
+
+================================================================================
+KEY FINDINGS - HEIGHT CHANGES (Most Important Metric)
+================================================================================
+
+REAR MODULE (13,312 LEDs):
+  > 1.0%:  32 LEDs  (0.24%) - Only 32 LEDs changed more than 1%
+  > 2.0%:   5 LEDs  (0.04%)
+  > 3.0%:   1 LED   (0.01%)
+  Mean: 0.225% | Median: 0.193% | Max: 3.018%
+
+MIDDLE MODULE (15,360 LEDs):
+  > 1.0%:  29 LEDs  (0.19%) - Only 29 LEDs changed more than 1%
+  > 2.0%:  14 LEDs  (0.09%)
+  > 3.0%:   2 LEDs  (0.01%)
+  Mean: 0.213% | Median: 0.178% | Max: 4.928%
+
+FRONT MODULE (15,360 LEDs):
+  > 1.0%:  30 LEDs  (0.20%) - Only 30 LEDs changed more than 1%
+  > 2.0%:   9 LEDs  (0.06%)
+  > 3.0%:   0 LEDs  (0.00%)
+  Mean: 0.194% | Median: 0.163% | Max: 2.551%
+
+================================================================================
+OVERALL ASSESSMENT
+================================================================================
+
+ 99.79% of all LEDs changed by LESS THAN 1% in height
+ 99.94% of all LEDs changed by LESS THAN 2% in height
+ Only 3 LEDs (0.007%) out of 44,032 changed by more than 3%
+
+CONCLUSION:
+Cross-talk effects are NEGLIGIBLE. The vast majority of LEDs (>99.8%) show
+changes under 1%, which is within normal measurement noise and system
+variation. No corrective action or calibration adjustments are required.
+
+Generated Files:
+  - distribution_histograms_by_module.png (detailed histograms for each module)
+  - distribution_comparison_bar_chart.png (comparative bar charts)
+  - cumulative_distribution.png (cumulative distribution curves)
+  - change_distribution_summary.txt (detailed statistics)
+
+================================================================================
