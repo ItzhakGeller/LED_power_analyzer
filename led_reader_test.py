@@ -1026,12 +1026,14 @@ class LEDAnalyzer:
             print(f"  Expected LEDs: {self.expected_led_count:,}")
             print(f"  Detected pulses: {num_pulses:,}")
             diff = num_pulses - self.expected_led_count
-            diff_percent = 100*diff/self.expected_led_count
+            diff_percent = 100 * diff / self.expected_led_count
             print(f"  Difference: {diff:+,} ({diff_percent:+.2f}%)")
-            
+
             # הודעת אימות
             if diff == 0:
-                print(f"  ✅ Perfect match: {num_pulses:,} pulses = {self.expected_led_count:,} expected LEDs")
+                print(
+                    f"  ✅ Perfect match: {num_pulses:,} pulses = {self.expected_led_count:,} expected LEDs"
+                )
             elif abs(diff_percent) < 0.1:
                 print(f"  ✅ Excellent match (within 0.1%)")
             elif abs(diff_percent) < 1.0:
@@ -1282,9 +1284,7 @@ class LEDAnalyzer:
             mean_std = np.mean(peak_stds)
 
             fig, ax = plt.subplots(1, 1, figsize=(14, 6))
-            fig.suptitle(
-                "Step 4: Peak STD per LED", fontsize=16, fontweight="bold"
-            )
+            fig.suptitle("Step 4: Peak STD per LED", fontsize=16, fontweight="bold")
 
             ax.plot(led_numbers, peak_stds, "purple", linewidth=0.5, alpha=0.7)
             ax.axhline(
@@ -1310,25 +1310,25 @@ class LEDAnalyzer:
             plt.show()
 
         print(f"\n✅ Step 4 completed successfully!")
-        
+
         # זיהוי אנומליות
         self._detect_anomalies(pulse_data)
-        
+
         # יצירת קובץ CSV
         self._export_to_csv(pulse_data)
-        
+
         print(f"{'='*80}\n")
 
     def _detect_anomalies(self, pulse_data):
         """זיהוי אנומליות בפולסים"""
         print(f"\n🔍 Anomaly Detection...")
-        
+
         # חישוב סטטיסטיקות
         amplitudes = [p["amplitude"] for p in pulse_data]
         pulse_widths = [p["pulse_width"] for p in pulse_data]
         intervals = [p["interval"] for p in pulse_data if p["interval"] > 0]
         peak_stds = [p["peak_std"] for p in pulse_data]
-        
+
         amp_mean = np.mean(amplitudes)
         amp_std = np.std(amplitudes)
         width_mean = np.mean(pulse_widths)
@@ -1337,101 +1337,112 @@ class LEDAnalyzer:
         interval_std = np.std(intervals)
         std_mean = np.mean(peak_stds)
         std_std = np.std(peak_stds)
-        
+
         # סף לזיהוי אנומליות (3 סטיות תקן)
         anomaly_threshold = 3
-        
-        anomalies = {
-            "amplitude": [],
-            "pulse_width": [],
-            "interval": [],
-            "peak_std": []
-        }
-        
+
+        anomalies = {"amplitude": [], "pulse_width": [], "interval": [], "peak_std": []}
+
         for p in pulse_data:
             led_num = p["pulse_num"]
-            
+
             # אנומליות באמפליטודה
             if abs(p["amplitude"] - amp_mean) > anomaly_threshold * amp_std:
-                anomalies["amplitude"].append({
-                    "led": led_num,
-                    "value": p["amplitude"],
-                    "deviation": (p["amplitude"] - amp_mean) / amp_std
-                })
-            
+                anomalies["amplitude"].append(
+                    {
+                        "led": led_num,
+                        "value": p["amplitude"],
+                        "deviation": (p["amplitude"] - amp_mean) / amp_std,
+                    }
+                )
+
             # אנומליות בגודל פולס
             if abs(p["pulse_width"] - width_mean) > anomaly_threshold * width_std:
-                anomalies["pulse_width"].append({
-                    "led": led_num,
-                    "value": p["pulse_width"],
-                    "deviation": (p["pulse_width"] - width_mean) / width_std
-                })
-            
+                anomalies["pulse_width"].append(
+                    {
+                        "led": led_num,
+                        "value": p["pulse_width"],
+                        "deviation": (p["pulse_width"] - width_mean) / width_std,
+                    }
+                )
+
             # אנומליות במרחק בין פולסים
-            if p["interval"] > 0 and abs(p["interval"] - interval_mean) > anomaly_threshold * interval_std:
-                anomalies["interval"].append({
-                    "led": led_num,
-                    "value": p["interval"],
-                    "deviation": (p["interval"] - interval_mean) / interval_std
-                })
-            
+            if (
+                p["interval"] > 0
+                and abs(p["interval"] - interval_mean)
+                > anomaly_threshold * interval_std
+            ):
+                anomalies["interval"].append(
+                    {
+                        "led": led_num,
+                        "value": p["interval"],
+                        "deviation": (p["interval"] - interval_mean) / interval_std,
+                    }
+                )
+
             # אנומליות ב-STD של השיא
             if abs(p["peak_std"] - std_mean) > anomaly_threshold * std_std:
-                anomalies["peak_std"].append({
-                    "led": led_num,
-                    "value": p["peak_std"],
-                    "deviation": (p["peak_std"] - std_mean) / std_std
-                })
-        
+                anomalies["peak_std"].append(
+                    {
+                        "led": led_num,
+                        "value": p["peak_std"],
+                        "deviation": (p["peak_std"] - std_mean) / std_std,
+                    }
+                )
+
         # הדפסת דוח אנומליות
         total_anomalies = sum(len(v) for v in anomalies.values())
         print(f"\n📊 Anomaly Report (>{anomaly_threshold}σ):")
         print(f"  Total anomalies found: {total_anomalies}")
-        
+
         if anomalies["amplitude"]:
             print(f"\n  ⚠️ Amplitude anomalies: {len(anomalies['amplitude'])}")
             for a in anomalies["amplitude"][:5]:  # הצגת 5 ראשונים
                 print(f"    LED {a['led']}: {a['value']:.6f}V ({a['deviation']:+.2f}σ)")
             if len(anomalies["amplitude"]) > 5:
                 print(f"    ... and {len(anomalies['amplitude'])-5} more")
-        
+
         if anomalies["pulse_width"]:
             print(f"\n  ⚠️ Pulse width anomalies: {len(anomalies['pulse_width'])}")
             for a in anomalies["pulse_width"][:5]:
-                print(f"    LED {a['led']}: {a['value']} samples ({a['deviation']:+.2f}σ)")
+                print(
+                    f"    LED {a['led']}: {a['value']} samples ({a['deviation']:+.2f}σ)"
+                )
             if len(anomalies["pulse_width"]) > 5:
                 print(f"    ... and {len(anomalies['pulse_width'])-5} more")
-        
+
         if anomalies["interval"]:
             print(f"\n  ⚠️ Interval anomalies: {len(anomalies['interval'])}")
             for a in anomalies["interval"][:5]:
-                print(f"    LED {a['led']}: {a['value']} samples ({a['deviation']:+.2f}σ)")
+                print(
+                    f"    LED {a['led']}: {a['value']} samples ({a['deviation']:+.2f}σ)"
+                )
             if len(anomalies["interval"]) > 5:
                 print(f"    ... and {len(anomalies['interval'])-5} more")
-        
+
         if anomalies["peak_std"]:
             print(f"\n  ⚠️ Peak STD anomalies: {len(anomalies['peak_std'])}")
             for a in anomalies["peak_std"][:5]:
                 print(f"    LED {a['led']}: {a['value']:.6f}V ({a['deviation']:+.2f}σ)")
             if len(anomalies["peak_std"]) > 5:
                 print(f"    ... and {len(anomalies['peak_std'])-5} more")
-        
+
         if total_anomalies == 0:
             print("  ✅ No significant anomalies detected")
-        
+
         self.anomalies = anomalies
         return anomalies
-    
+
     def _export_to_csv(self, pulse_data):
         """ייצוא תוצאות ל-CSV"""
         import csv
-        
+
         # יצירת שם קובץ מבוסס על שם קובץ המקור
         csv_filename = self.bin_file_path.stem + "_analyzed.csv"
         csv_path = self.output_dir / csv_filename
-        
+
         print(f"\n💾 Exporting to CSV: {csv_path}")
-        
+
         # זיהוי אנומליות עבור כל LED
         amp_mean = np.mean([p["amplitude"] for p in pulse_data])
         amp_std = np.std([p["amplitude"] for p in pulse_data])
@@ -1439,36 +1450,51 @@ class LEDAnalyzer:
         width_std = np.std([p["pulse_width"] for p in pulse_data])
         std_mean = np.mean([p["peak_std"] for p in pulse_data])
         std_std_value = np.std([p["peak_std"] for p in pulse_data])
-        
-        with open(csv_path, 'w', newline='', encoding='utf-8') as csvfile:
+
+        with open(csv_path, "w", newline="", encoding="utf-8") as csvfile:
             fieldnames = [
-                'LED_Number', 'Peak_V', 'Valley_V', 'Amplitude_V', 'Peak_STD_V',
-                'Pulse_Width_samples', 'Interval_samples',
-                'Amplitude_Anomaly', 'Width_Anomaly', 'STD_Anomaly'
+                "LED_Number",
+                "Peak_V",
+                "Valley_V",
+                "Amplitude_V",
+                "Peak_STD_V",
+                "Pulse_Width_samples",
+                "Interval_samples",
+                "Amplitude_Anomaly",
+                "Width_Anomaly",
+                "STD_Anomaly",
             ]
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-            
+
             writer.writeheader()
-            
+
             for p in pulse_data:
                 # חישוב סטיות תקן
                 amp_sigma = (p["amplitude"] - amp_mean) / amp_std if amp_std > 0 else 0
-                width_sigma = (p["pulse_width"] - width_mean) / width_std if width_std > 0 else 0
-                std_sigma = (p["peak_std"] - std_mean) / std_std_value if std_std_value > 0 else 0
-                
-                writer.writerow({
-                    'LED_Number': p["pulse_num"],
-                    'Peak_V': f"{p['peak_value']:.6f}",
-                    'Valley_V': f"{p['valley_value']:.6f}",
-                    'Amplitude_V': f"{p['amplitude']:.6f}",
-                    'Peak_STD_V': f"{p['peak_std']:.6f}",
-                    'Pulse_Width_samples': p['pulse_width'],
-                    'Interval_samples': p['interval'],
-                    'Amplitude_Anomaly': 'YES' if abs(amp_sigma) > 3 else 'NO',
-                    'Width_Anomaly': 'YES' if abs(width_sigma) > 3 else 'NO',
-                    'STD_Anomaly': 'YES' if abs(std_sigma) > 3 else 'NO'
-                })
-        
+                width_sigma = (
+                    (p["pulse_width"] - width_mean) / width_std if width_std > 0 else 0
+                )
+                std_sigma = (
+                    (p["peak_std"] - std_mean) / std_std_value
+                    if std_std_value > 0
+                    else 0
+                )
+
+                writer.writerow(
+                    {
+                        "LED_Number": p["pulse_num"],
+                        "Peak_V": f"{p['peak_value']:.6f}",
+                        "Valley_V": f"{p['valley_value']:.6f}",
+                        "Amplitude_V": f"{p['amplitude']:.6f}",
+                        "Peak_STD_V": f"{p['peak_std']:.6f}",
+                        "Pulse_Width_samples": p["pulse_width"],
+                        "Interval_samples": p["interval"],
+                        "Amplitude_Anomaly": "YES" if abs(amp_sigma) > 3 else "NO",
+                        "Width_Anomaly": "YES" if abs(width_sigma) > 3 else "NO",
+                        "STD_Anomaly": "YES" if abs(std_sigma) > 3 else "NO",
+                    }
+                )
+
         print(f"  ✅ CSV exported successfully: {len(pulse_data):,} rows")
 
     def _step5_peak_valley_calculation(self):
@@ -1987,17 +2013,19 @@ if __name__ == "__main__":
     #   python led_reader_test.py file.bin Rear
     #   python led_reader_test.py file.bin 0
     #   python led_reader_test.py file.bin 2304 15615
-    
+
     module_config = None
     if len(sys.argv) > 2:
         module_param = sys.argv[2]
-        
+
         # בדיקה אם זה module_name או module_id
         for config in CROSSTALK_CONFIG:
-            if module_param.lower() == config["name"].lower() or module_param == str(config["module_id"]):
+            if module_param.lower() == config["name"].lower() or module_param == str(
+                config["module_id"]
+            ):
                 module_config = config
                 break
-        
+
         # אם לא מצאנו module, בדיקה אם זה טווח ידני
         if module_config is None and len(sys.argv) > 3:
             try:
@@ -2006,20 +2034,26 @@ if __name__ == "__main__":
                 print(f"📋 Using manual LED range: {first_led} - {last_led}")
             except ValueError:
                 print(f"⚠️ Invalid module parameter: {module_param}")
-                modules_list = ", ".join([f"{c['name']} ({c['module_id']})" for c in CROSSTALK_CONFIG])
+                modules_list = ", ".join(
+                    [f"{c['name']} ({c['module_id']})" for c in CROSSTALK_CONFIG]
+                )
                 print(f"Available modules: {modules_list}")
                 sys.exit(1)
-    
+
     # אם לא הוגדר כלום, ברירת מחדל ל-Rear
-    if module_config is None and 'first_led' not in locals():
+    if module_config is None and "first_led" not in locals():
         module_config = CROSSTALK_CONFIG[0]  # Rear
-    
+
     if module_config:
         first_led = module_config["first_led"]
         last_led = module_config["last_led"]
         expected_leds = module_config["expected_leds"]
-        print(f"📋 Selected Module: {module_config['name']} (ID: {module_config['module_id']})")
-        print(f"📋 LED Range: {first_led} - {last_led} ({expected_leds:,} LEDs expected)")
+        print(
+            f"📋 Selected Module: {module_config['name']} (ID: {module_config['module_id']})"
+        )
+        print(
+            f"📋 LED Range: {first_led} - {last_led} ({expected_leds:,} LEDs expected)"
+        )
 
     # Set show_plots=True to see visualizations (False for faster timing)
     analyzer = LEDAnalyzer(

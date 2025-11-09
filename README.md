@@ -1,191 +1,233 @@
-# LED Signal Processing Analyzer
+﻿# LED Power Analyzer
 
-A comprehensive signal processing toolkit for analyzing oscilloscope data from LED measurements stored in binary (BIN) format.
+**A comprehensive Python tool for analyzing LED power measurement data from binary oscilloscope/power meter recordings.**
 
-## Project Overview
+[![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-This project implements multiple approaches for analyzing LED measurement data, starting with a threshold-based peak detection method and expanding to more sophisticated techniques including wavelet analysis and machine learning approaches.
+##  Overview
 
-## Current Implementation: Approach 1
+This analyzer processes binary voltage data files (`.bin`) captured from power meters during LED module testing. It automatically detects individual LED pulses, calculates their characteristics (amplitude, width, interval), identifies anomalies, and generates comprehensive visualization reports and CSV exports.
 
-**Threshold-Based Peak Detection with Statistical Analysis**
+**Key Capabilities:**
+-  Automatic pulse detection and threshold calculation
+-  Statistical analysis of 13,000+ LED pulses in seconds
+-  Anomaly detection using 3-sigma statistical thresholds
+-  Professional visualization with multiple analysis graphs
+-  CSV export with detailed per-LED measurements
+-  Optimized for large datasets (900K+ samples)
+-  Pre-configured for multiple LED module types
 
-### Features
-- Binary file reading and data transformation
-- Signal preprocessing with filtering and baseline removal
-- Adaptive pulse detection using statistical thresholding
-- Pulse amplitude calculation and plateau averaging
-- Data integrity checks and quality assessment
-- Comprehensive visualization and reporting
-- CSV export functionality
+##  Use Cases
 
-### Quick Start
+- **Quality Control**: Automated LED brightness uniformity testing
+- **Manufacturing**: High-throughput LED module validation
+- **R&D**: LED performance characterization and analysis
+- **Failure Analysis**: Identifying defective LEDs in production batches
 
-1. **Install Dependencies**
-   ```bash
-   pip install -r requirements.txt
-   ```
+##  Sample Output
 
-2. **Test with Synthetic Data**
-   ```bash
-   python test_analyzer.py
-   ```
+### LED Amplitude Distribution
+![LED vs Amplitude](examples/step4_led_vs_amplitude.png)
+*Top: Absolute amplitude per LED | Bottom: Normalized amplitude showing uniformity*
 
-3. **Analyze Real Data**
-   ```python
-   from led_analyzer import LEDSignalAnalyzer, AnalysisParameters
-   
-   # Configure analysis parameters
-   params = AnalysisParameters(
-       sampling_rate=1e6,      # 1 MHz sampling rate
-       filter_cutoff=1000,     # 1 kHz low-pass filter
-       min_pulse_height=0.1,   # 100 mV minimum pulse height
-       min_pulse_width=1e-3,   # 1 ms minimum pulse width
-       max_pulse_width=10e-3   # 10 ms maximum pulse width
-   )
-   
-   # Initialize analyzer
-   analyzer = LEDSignalAnalyzer(params)
-   
-   # Load and analyze data
-   time_data, voltage_data = analyzer.read_bin_file("your_data.bin")
-   filtered_data = analyzer.preprocess_signal()
-   pulses = analyzer.detect_pulses()
-   
-   # Generate results
-   analyzer.plot_signal_overview("analysis_overview.png")
-   analyzer.export_results_to_csv("results.csv")
-   report = analyzer.generate_analysis_report()
-   ```
+### Statistical Analysis
+![Statistics](examples/step4_statistics_histograms.png)
+*Pulse width, interval, and amplitude distributions with mean values*
 
-## Project Structure
+### Peak Standard Deviation
+![Peak STD](examples/step4_peak_std.png)
+*Standard deviation of peak region points - useful for signal quality assessment*
 
+##  Quick Start
+
+### Prerequisites
+```python
+# Required Python 3.12+
+pip install numpy scipy matplotlib
+```
+
+### Basic Usage
+```python
+# Analyze with pre-configured module
+python led_reader_test.py measurement.bin Rear
+
+# Or specify custom LED range
+python led_reader_test.py measurement.bin 2304 15615
+```
+
+### Example Analysis Session
+```
+ Selected Module: Rear (ID: 0)
+ LED Range: 2304 - 15615 (13,312 LEDs expected)
+
+ Voltage Data Analysis:
+Values count: 925,601
+Range: -0.146250V to 0.238125V
+
+ STEP 4: PRECISE PULSE DETECTION
+  Expected LEDs: 13,312
+  Detected pulses: 13,312
+   Perfect match!
+
+ Anomaly Report (>3σ):
+  Total anomalies found: 236
+   Amplitude anomalies: 114
+   Peak STD anomalies: 106
+
+ CSV exported: measurement_analyzed.csv
+ Total analysis completed in 27.81 seconds
+```
+
+##  Analysis Pipeline
+
+### Step 1: Histogram Analysis & Threshold Detection
+- Analyzes voltage distribution across entire dataset
+- Identifies peak and valley clusters automatically
+- Calculates optimal threshold (midpoint between clusters)
+
+### Step 2: Initial Pulse Detection
+- Detects threshold crossings (rising/falling edges)
+- Validates pulse consistency
+- Calculates average pulse characteristics
+
+### Step 3: Dead Zone Removal
+- Uses sliding window STD analysis
+- Removes low-signal regions from start/end of recording
+- Applies 25% STD threshold with safety margins
+- Retains ~85% of active measurement data
+
+### Step 4: Precise Pulse Analysis
+- **Peak Calculation**: Mean of central 50% of pulse
+- **Valley Calculation**: Minimum between pulses
+- **Amplitude**: Peak - Valley for each LED
+- **Peak STD**: Standard deviation within peak region
+- Generates statistical histograms and per-LED plots
+
+### Step 5: Anomaly Detection
+Identifies LEDs with >3σ deviation in:
+- **Amplitude**: Brightness variations
+- **Pulse Width**: Timing irregularities
+- **Interval**: Spacing anomalies
+- **Peak STD**: Signal quality issues
+
+##  Output Files
+
+All outputs are saved to `{filename}_analysis/` directory:
+
+| File | Description |
+|------|-------------|
+| `step4_statistics_histograms.png` | Pulse width, interval, and amplitude distributions |
+| `step4_led_vs_amplitude.png` | Per-LED amplitude plot (absolute & normalized) |
+| `step4_peak_std.png` | Standard deviation per LED |
+| `{filename}_analyzed.csv` | Complete data with anomaly flags |
+
+### CSV Format
+```csv
+LED_Number,Peak_V,Valley_V,Amplitude_V,Peak_STD_V,Pulse_Width_samples,Interval_samples,Amplitude_Anomaly,Width_Anomaly,STD_Anomaly
+2304,0.221875,-0.128125,0.350000,0.001967,26,58,NO,NO,NO
+2305,0.225000,-0.128125,0.353125,0.002079,26,59,NO,NO,NO
+...
+```
+
+##  Module Configuration
+
+Pre-configured for three LED module types:
+
+```python
+CROSSTALK_CONFIG = [
+    {
+        "name": "Rear",
+        "module_id": 0,
+        "first_led": 2304,
+        "last_led": 15615,
+        "expected_leds": 13312,
+    },
+    {
+        "name": "Middle",
+        "module_id": 1,
+        "first_led": 256,
+        "last_led": 15615,
+        "expected_leds": 15360,
+    },
+    {
+        "name": "Front",
+        "module_id": 2,
+        "first_led": 256,
+        "last_led": 21247,
+        "expected_leds": 20992,
+    },
+]
+```
+
+### Usage Examples
+```bash
+# By module name
+python led_reader_test.py data.bin Rear
+
+# By module ID
+python led_reader_test.py data.bin 0
+
+# Custom range
+python led_reader_test.py data.bin 256 21247
+```
+
+##  Technical Details
+
+### Binary File Format
+- **Header**: 128 bytes (skipped)
+- **Data**: 32-bit float array (little-endian)
+- **Units**: Voltage (V)
+
+### Performance Optimizations
+- Downsampling for visualization (5K-10K points)
+- Vectorized numpy operations
+- Smart window-based STD calculations
+- Parallel-ready architecture
+
+### Algorithm Features
+- **Adaptive thresholding**: Histogram-based clustering
+- **Robust peak detection**: 50% central region averaging
+- **Statistical anomaly detection**: 3-sigma threshold
+- **Dead zone removal**: STD-based boundary detection
+
+##  Typical Results
+
+**Example: Spark Rear Module (W3)**
+- File size: 3.7 MB (925,601 samples)
+- LEDs detected: 13,312 / 13,312 (100% match)
+- Processing time: ~28 seconds
+- Anomalies found: 236 (1.8%)
+  - Amplitude: 114 LEDs
+  - Peak STD: 106 LEDs
+  - Pulse width: 14 LEDs
+  - Interval: 2 LEDs
+
+##  Development
+
+### Project Structure
 ```
 led-signal-analyzer/
-├── ANALYSIS_APPROACHES.md     # Documentation of all approaches
-├── led_analyzer.py            # Main analysis implementation
-├── test_analyzer.py           # Testing and validation script
-├── requirements.txt           # Python dependencies
-└── README.md                 # This file
+ led_reader_test.py      # Main analyzer script (2070 lines)
+ examples/                # Sample output images
+ .gitignore              # Excludes outputs and data files
+ README.md               # This file
 ```
 
-## Analysis Pipeline
+### Contributing
+This is a professional analysis tool developed for LED manufacturing QC. For questions or collaboration opportunities, please reach out.
 
-1. **Data Reading**: Convert BIN files to time/voltage arrays
-2. **Preprocessing**: Apply filtering and baseline correction
-3. **Pulse Detection**: Identify LED pulse boundaries
-4. **Parameter Extraction**: Calculate amplitude, width, and plateau averages
-5. **Quality Assessment**: Validate pulses and detect anomalies
-6. **Visualization**: Generate comprehensive analysis plots
-7. **Export**: Save results to CSV with detailed metrics
+##  License
 
-## Key Parameters
+MIT License - See LICENSE file for details
 
-### Signal Processing
-- `sampling_rate`: Data acquisition sampling rate (Hz)
-- `filter_cutoff`: Low-pass filter cutoff frequency (Hz)
-- `filter_order`: Digital filter order
+##  Author
 
-### Pulse Detection
-- `min_pulse_height`: Minimum detectable pulse amplitude (V)
-- `min_pulse_width`: Minimum acceptable pulse duration (s)
-- `max_pulse_width`: Maximum acceptable pulse duration (s)
-- `baseline_window`: Window size for baseline estimation
-- `plateau_safety_margin`: Safety margin for plateau averaging
+**Tsahi Geller**
+- Hardware/Software Engineer
+- Specializing in LED characterization and test automation
+- GitHub: [@ItzhakGeller](https://github.com/ItzhakGeller)
 
-### Quality Assessment
-- `snr_threshold`: Minimum signal-to-noise ratio
-- `cv_threshold`: Maximum coefficient of variation for consistency
+---
 
-## Data Integrity Checks
-
-### Implemented
-- Pulse width consistency monitoring
-- Amplitude range validation
-- Signal-to-noise ratio assessment
-- Baseline stability tracking
-
-### Planned
-- Inter-pulse spacing analysis
-- Spectral content validation
-- Crosstalk detection
-- Timing jitter analysis
-
-## Success Criteria (Approach 1)
-
-- **Pulse Detection Accuracy**: >95% correct identification
-- **Amplitude Precision**: <2% coefficient of variation
-- **Baseline Stability**: <1% drift over measurement
-- **Processing Speed**: <10 seconds per dataset
-- **False Positive Rate**: <5% incorrect detections
-- **Missing LED Detection**: >90% detection rate
-
-## Output Files
-
-### CSV Results (`results.csv`)
-- LED_Number: Sequential LED identifier (0-based)
-- Power_Voltage: Averaged plateau voltage (V)
-- Peak_Voltage: Maximum pulse voltage (V)
-- Amplitude: Peak-to-bottom difference (V)
-- Pulse_Width_ms: Pulse duration (milliseconds)
-- Quality_Score: Pulse quality metric (0-1)
-- Is_Valid: Boolean validity flag
-
-### Analysis Plots (`analysis_overview.png`)
-1. **Signal Overview**: Raw data, filtered data, and baseline
-2. **Pulse Detection**: Detected pulses with validity indicators
-3. **LED Power Results**: LED number vs measured power
-
-## Future Approaches
-
-See `ANALYSIS_APPROACHES.md` for detailed descriptions of planned implementations:
-
-- **Approach 2**: Morphological Signal Processing with Template Matching
-- **Approach 3**: Wavelet-Based Multi-Resolution Analysis
-- **Approach 4**: Machine Learning-Based Detection (CNN/LSTM)
-- **Approach 5**: Hybrid Statistical-Physical Model
-
-## Troubleshooting
-
-### Common Issues
-
-1. **Import Error**: Ensure all dependencies are installed
-   ```bash
-   pip install numpy scipy matplotlib pandas
-   ```
-
-2. **File Reading Error**: Check BIN file format and byte order
-   - Verify `data_format` parameter ('float32' or 'float64')
-   - Check `byte_order` parameter ('little' or 'big')
-
-3. **No Pulses Detected**: Adjust detection parameters
-   - Lower `min_pulse_height` threshold
-   - Adjust `min_pulse_width` and `max_pulse_width`
-   - Check signal preprocessing parameters
-
-4. **Poor Quality Results**: Optimize signal processing
-   - Adjust filter cutoff frequency
-   - Modify baseline estimation window
-   - Tune plateau safety margin
-
-### Parameter Tuning Guide
-
-1. **Start with test data**: Use `test_analyzer.py` to validate setup
-2. **Visualize raw data**: Check signal characteristics and noise levels
-3. **Adjust thresholds**: Tune detection parameters based on signal amplitude
-4. **Validate results**: Check pulse detection accuracy and quality scores
-5. **Iterate**: Refine parameters based on analysis results
-
-## Contributing
-
-When implementing new approaches:
-
-1. Create new analysis class inheriting from base functionality
-2. Update `ANALYSIS_APPROACHES.md` with implementation status
-3. Add comprehensive testing and validation
-4. Document parameter sensitivity and tuning guidelines
-5. Benchmark against success criteria
-
-## Contact
-
-For questions or issues with the LED signal processing analysis, please refer to the documentation or create detailed issue reports with sample data and parameter configurations.
+*Developed for high-precision LED module quality control and characterization*
