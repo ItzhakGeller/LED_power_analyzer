@@ -961,6 +961,12 @@ class LEDAnalyzer:
 
             total_viz_time = time.time() - viz_start
             print(f"⏱️ [Step 3] Total visualization prep: {total_viz_time:.3f}s")
+            
+            # Save the plot
+            save_path = self.output_dir / "step3_dead_zone_removal.png"
+            plt.savefig(save_path, dpi=150, bbox_inches="tight")
+            print(f"  💾 Saved: {save_path}")
+            
             print(f"📊 [Step 3] Showing plot (this will wait for user to close)...")
 
             show_start = time.time()
@@ -1995,6 +2001,12 @@ class LEDAnalyzer:
         plt.grid(True, alpha=0.3)
 
         plt.tight_layout()
+        
+        # Save the plot
+        save_path = self.output_dir / "step5_peak_valley_extraction.png"
+        plt.savefig(save_path, dpi=150, bbox_inches="tight")
+        print(f"💾 Saved: {save_path}")
+        
         plt.show()
 
 
