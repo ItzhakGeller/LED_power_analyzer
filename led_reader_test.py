@@ -4,6 +4,25 @@ from pathlib import Path
 import time
 from scipy import stats
 
+# ============================================================================
+# USER CONFIGURATION - Edit these values for your analysis
+# ============================================================================
+
+# File Configuration
+BIN_FILE_DIRECTORY = (
+    r"C:\Users\geller\OneDrive - HP Inc\data\manual LED power measurement analyzer"
+)
+BIN_FILE_NAME = "Spark_Rear_W3.bin"
+
+# LED Range Configuration (choose one method):
+# Method 1: Use predefined module (uncomment to use)
+SELECTED_MODULE = "Rear"  # Options: "Rear", "Middle", "Front", or None
+
+# Method 2: Manual LED range (used only if SELECTED_MODULE is None)
+MANUAL_FIRST_LED = 2304
+MANUAL_LAST_LED = 15615
+
+# ============================================================================
 # Module configurations from crosstalk_comparison_analysis.py
 CROSSTALK_CONFIG = [
     {
@@ -961,12 +980,12 @@ class LEDAnalyzer:
 
             total_viz_time = time.time() - viz_start
             print(f"⏱️ [Step 3] Total visualization prep: {total_viz_time:.3f}s")
-            
+
             # Save the plot
             save_path = self.output_dir / "step3_dead_zone_removal.png"
             plt.savefig(save_path, dpi=150, bbox_inches="tight")
             print(f"  💾 Saved: {save_path}")
-            
+
             print(f"📊 [Step 3] Showing plot (this will wait for user to close)...")
 
             show_start = time.time()
@@ -1460,9 +1479,10 @@ class LEDAnalyzer:
         with open(csv_path, "w", newline="", encoding="utf-8") as csvfile:
             fieldnames = [
                 "LED_Number",
+                "Amplitude_Normalized",
+                "Amplitude_V",
                 "Peak_V",
                 "Valley_V",
-                "Amplitude_V",
                 "Peak_STD_V",
                 "Pulse_Width_samples",
                 "Interval_samples",
@@ -1486,12 +1506,16 @@ class LEDAnalyzer:
                     else 0
                 )
 
+                # חישוב אמפליטודה מנורמלת
+                normalized_amplitude = p["amplitude"] / amp_mean if amp_mean > 0 else 0
+
                 writer.writerow(
                     {
                         "LED_Number": p["pulse_num"],
+                        "Amplitude_Normalized": f"{normalized_amplitude:.6f}",
+                        "Amplitude_V": f"{p['amplitude']:.6f}",
                         "Peak_V": f"{p['peak_value']:.6f}",
                         "Valley_V": f"{p['valley_value']:.6f}",
-                        "Amplitude_V": f"{p['amplitude']:.6f}",
                         "Peak_STD_V": f"{p['peak_std']:.6f}",
                         "Pulse_Width_samples": p["pulse_width"],
                         "Interval_samples": p["interval"],
@@ -2001,31 +2025,27 @@ class LEDAnalyzer:
         plt.grid(True, alpha=0.3)
 
         plt.tight_layout()
-        
+
         # Save the plot
         save_path = self.output_dir / "step5_peak_valley_extraction.png"
         plt.savefig(save_path, dpi=150, bbox_inches="tight")
         print(f"💾 Saved: {save_path}")
-        
+
         plt.show()
 
 
 if __name__ == "__main__":
     import sys
 
-    # Allow file path as command-line argument
+    # Priority 1: Command-line arguments (if provided)
     if len(sys.argv) > 1:
         test_file = sys.argv[1]
     else:
-        test_file = r"C:\Users\geller\OneDrive - HP Inc\data\W3\complete thermal test\led_data_06.bin"
+        # Priority 2: Use configuration from top of file
+        test_file = str(Path(BIN_FILE_DIRECTORY) / BIN_FILE_NAME)
 
-    # אפשרות להגדיר module או ערכים ידניים
-    # ניתן להעביר כפרמטר: module_name או module_id או first_led,last_led
-    # לדוגמה:
-    #   python led_reader_test.py file.bin Rear
-    #   python led_reader_test.py file.bin 0
-    #   python led_reader_test.py file.bin 2304 15615
-
+    # LED Range Configuration
+    # Priority 1: Command-line arguments
     module_config = None
     if len(sys.argv) > 2:
         module_param = sys.argv[2]
@@ -2052,9 +2072,22 @@ if __name__ == "__main__":
                 print(f"Available modules: {modules_list}")
                 sys.exit(1)
 
-    # אם לא הוגדר כלום, ברירת מחדל ל-Rear
+    # Priority 2: Use configuration from top of file
     if module_config is None and "first_led" not in locals():
-        module_config = CROSSTALK_CONFIG[0]  # Rear
+        if SELECTED_MODULE is not None:
+            # Look for selected module
+            for config in CROSSTALK_CONFIG:
+                if config["name"] == SELECTED_MODULE:
+                    module_config = config
+                    break
+            if module_config is None:
+                print(f"⚠️ Module '{SELECTED_MODULE}' not found in configuration")
+                sys.exit(1)
+        else:
+            # Use manual range
+            first_led = MANUAL_FIRST_LED
+            last_led = MANUAL_LAST_LED
+            print(f"📋 Using manual LED range from config: {first_led} - {last_led}")
 
     if module_config:
         first_led = module_config["first_led"]
