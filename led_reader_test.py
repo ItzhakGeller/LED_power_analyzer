@@ -1268,7 +1268,7 @@ class LEDAnalyzer:
             )
 
             # Absolute Amplitude
-            ax1.plot(led_numbers, amplitudes, "b-", linewidth=0.5, alpha=0.7)
+            ax1.plot(led_numbers, amplitudes, "b-", linewidth=0.5, alpha=0.7, picker=5)
             ax1.axhline(
                 mean_amplitude,
                 color="red",
@@ -1278,16 +1278,16 @@ class LEDAnalyzer:
             )
             ax1.set_xlabel("LED Number")
             ax1.set_ylabel("Amplitude (V)")
-            ax1.set_title("Absolute Amplitude")
+            ax1.set_title("Absolute Amplitude (Interactive: Zoom with scroll, Pan with mouse)")
             ax1.legend()
             ax1.grid(True, alpha=0.3)
 
             # Normalized Amplitude
-            ax2.plot(led_numbers, normalized_amplitudes, "g-", linewidth=0.5, alpha=0.7)
+            ax2.plot(led_numbers, normalized_amplitudes, "g-", linewidth=0.5, alpha=0.7, picker=5)
             ax2.axhline(1.0, color="red", linestyle="--", linewidth=2, label="Mean=1.0")
             ax2.set_xlabel("LED Number")
             ax2.set_ylabel("Normalized Amplitude (a.u.)")
-            ax2.set_title("Normalized Amplitude (divided by mean)")
+            ax2.set_title("Normalized Amplitude (Interactive: Zoom with scroll, Pan with mouse)")
             ax2.legend()
             ax2.grid(True, alpha=0.3)
 
@@ -1297,6 +1297,13 @@ class LEDAnalyzer:
             save_path = self.output_dir / "step4_led_vs_amplitude.png"
             plt.savefig(save_path, dpi=150, bbox_inches="tight")
             print(f"  💾 Saved: {save_path}")
+            
+            # Enable interactive navigation
+            print(f"  🖱️ Interactive controls:")
+            print(f"     - Scroll wheel: Zoom in/out")
+            print(f"     - Click + Drag: Pan (move around)")
+            print(f"     - Home button (toolbar): Reset view")
+            print(f"     - Zoom button (toolbar): Select area to zoom")
 
             plt.show()
 
@@ -1311,7 +1318,7 @@ class LEDAnalyzer:
             fig, ax = plt.subplots(1, 1, figsize=(14, 6))
             fig.suptitle("Step 4: Peak STD per LED", fontsize=16, fontweight="bold")
 
-            ax.plot(led_numbers, peak_stds, "purple", linewidth=0.5, alpha=0.7)
+            ax.plot(led_numbers, peak_stds, "purple", linewidth=0.5, alpha=0.7, picker=5)
             ax.axhline(
                 mean_std,
                 color="red",
@@ -1321,7 +1328,7 @@ class LEDAnalyzer:
             )
             ax.set_xlabel("LED Number")
             ax.set_ylabel("Peak STD (V)")
-            ax.set_title("Standard Deviation of Peak Region Points")
+            ax.set_title("Standard Deviation of Peak Region Points (Interactive: Zoom with scroll, Pan with mouse)")
             ax.legend()
             ax.grid(True, alpha=0.3)
 
@@ -1331,6 +1338,8 @@ class LEDAnalyzer:
             save_path = self.output_dir / "step4_peak_std.png"
             plt.savefig(save_path, dpi=150, bbox_inches="tight")
             print(f"  💾 Saved: {save_path}")
+            
+            print(f"  🖱️ Interactive controls enabled (scroll to zoom, drag to pan)")
 
             plt.show()
 
